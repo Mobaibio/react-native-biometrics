@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CaptureFragment">
+
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        />
+    <TextView
+        android:id="@+id/et_capture_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:layout_marginStart="10dp"
+        android:visibility="gone"
+        android:textColor="#E5E1EA"
+        android:textSize="18sp"
+        />
+    <LinearLayout
+        android:id="@+id/ll_capture"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="80dp"
+        android:layout_marginStart="10dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Capture Status: "
+                tools:ignore="HardcodedText"
+                android:textColor="#E5E1EA"
+                android:textSize="18sp"/>
+            <TextView
+                android:id="@+id/et_capture_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#E5E1EA"
+                android:textSize="18sp"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_face"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Face Status: "
+                tools:ignore="HardcodedText"
+                android:textColor="#E5E1EA"
+                android:textSize="18sp"
+                />
+            <TextView
+                android:id="@+id/et_face_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#E5E1EA"
+                android:textSize="18sp"
+                />
+        </LinearLayout>
+
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/btn_start_capture"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:text="START CAPTURE"
+        android:textColor="#CCADAD"
+        android:textSize="17sp"
+        tools:ignore="HardcodedText"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center"
+        android:layout_marginTop="680dp"
+        android:visibility="gone"
+        />
+</FrameLayout>

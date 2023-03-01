@@ -72,11 +72,8 @@ class MobaiReactNative: RCTEventEmitter, MBCaptureSessionDelegate {
     @objc
     override func constantsToExport() -> [AnyHashable : Any]! {
         [
-            "onCaptureFinished": EventName.onCaptureFinished.rawValue,
-            "onCaptureStarted": EventName.onCaptureStarted.rawValue,
-            "onWaitingToCaptureWithFaceStatus": EventName.onWaitingToCaptureWithFaceStatus.rawValue,
-            "onFailureWithErrorMessage": EventName.onFailureWithErrorMessage.rawValue,
-            "onPresentedDismissTapped": EventName.onPresentedDismissTapped.rawValue
+            "EVENT_SUCCESS": EventName.onCaptureFinished.rawValue,
+            "EVENT_FAILURE": EventName.onFailureWithErrorMessage.rawValue,
         ]
     }
     
@@ -85,7 +82,6 @@ class MobaiReactNative: RCTEventEmitter, MBCaptureSessionDelegate {
         options: NSDictionary
     ) {
         DispatchQueue.main.async {
-            print(options)
             let sessionOptions = MBCaptureSessionOptions(dictionaryOptions: options)
             let captureVC = MBCaptureSessionViewController(options: sessionOptions)
             let navigation = UINavigationController(rootViewController: captureVC)

@@ -332,7 +332,6 @@ DEPENDENCIES:
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - libevent (~> 2.1.12)
   - mobai-biometric (from `../..`)
-  - MobaiBiometric (from `./biometric/MobaiBiometric.podspec`)
   - RCT-Folly (from `../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec`)
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -364,6 +363,8 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
+  https://gitlab.com/mobaibio-public/podspecs.git:
+    - MobaiBiometric
   trunk:
     - fmt
     - libevent
@@ -384,8 +385,6 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec"
   mobai-biometric:
     :path: "../.."
-  MobaiBiometric:
-    :path: "./biometric/MobaiBiometric.podspec"
   RCT-Folly:
     :podspec: "../node_modules/react-native/third-party-podspecs/RCT-Folly.podspec"
   RCTRequired:
@@ -452,7 +451,7 @@ SPEC CHECKSUMS:
   glog: 04b94705f318337d7ead9e6d17c019bd9b1f6b1b
   hermes-engine: 922ccd744f50d9bfde09e9677bf0f3b562ea5fb9
   libevent: 4049cae6c81cdb3654a443be001fb9bdceff7913
-  mobai-biometric: 255ffd349b9a65f273006a03db2385b26cd36594
+  mobai-biometric: 99dbb84148783e5def387d978020d6320d7efcce
   MobaiBiometric: e8a77c56c249ee9475a8790fa415b8179ba09597
   RCT-Folly: 424b8c9a7a0b9ab2886ffe9c3b041ef628fd4fb1
   RCTRequired: fd4d923b964658aa0c4091a32c8b2004c6d9e3a6
@@ -484,6 +483,6 @@ SPEC CHECKSUMS:
   SwiftProtobuf: b02b5075dcf60c9f5f403000b3b0c202a11b6ae1
   Yoga: 921eb014669cf9c718ada68b08d362517d564e0c
 
-PODFILE CHECKSUM: 4c749e706a2514e4120b5612f4b4fce640222605
+PODFILE CHECKSUM: 6475f7ba9f79ba6b8b7247725ff8c182e36214c5
 
 COCOAPODS: 1.11.3

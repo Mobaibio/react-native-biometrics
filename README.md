@@ -65,24 +65,56 @@ React Native version of Mobai Biometric mobile SDK
 
 ### Android
 
-TBD
+The repository where the MobaiBiometric SDK used by the React Native module is located must be added to the list of repositories.
+
+```groovy
+// build.gradle (Project)
+allprojects {
+    repositories {
+        maven {
+            url "https://gitlab.com/api/v4/projects/36441060/packages/maven"
+        }
+    }
+}
+```
 
 ## Usage
 
 ```js
-import { launch, MobaiBiometric } from 'mobai-biometric';
+import {
+  ErrorResult,
+  MBCaptureSessionResult,
+  EVENT_FAILURE,
+  EVENT_SUCCESS,
+  launch,
+  MobaiBiometric,
+  MobaiBiometricOptions,
+} from 'mobai-biometric';
 
-const mobaiBiometricEmmiter = new NativeEventEmitter(MobaiBiometric);
+const onCaptureFinished = (result: MBCaptureSessionResult) => {
+    console.log(EVENT_SUCCESS + 'onCaptureFinished' + result.image.length);
+    if (result.image !== undefined && result.padData !== undefined) {
+      console.log(EVENT_SUCCESS + ' image ' + result.image.length);
+      console.log(EVENT_SUCCESS + ' padData ' + result.padData.length);
+    } else {
+      console.log('Object is not comming');
+    }
+  };
 
-const onCaptureFinished = (event: any) => {
-    console.log('onCaptureFinished:' + event);
-};
+  const onFailureWithErrorMessage = (result: ErrorResult) => {
+    if (result.errorDescription !== undefined) {
+      console.log(EVENT_FAILURE + ' error ' + result.errorDescription);
+    } else {
+      console.log('Object is not comming');
+    }
+  };
 
-const onFailureWithErrorMessage = (event: any) => {
-    console.log('onFailureWithErrorMessage:' + event);
-};
+  mobaiBiometricEmmiter.addListener(EVENT_SUCCESS, onCaptureFinished);
 
-mobaiBiometricEmmiter.addListener('onCaptureFinished', onCaptureFinished);
+  mobaiBiometricEmmiter.addListener(EVENT_FAILURE, onFailureWithErrorMessage);
 
-mobaiBiometricEmmiter.addListener('onFailureWithErrorMessage', onFailureWithErrorMessage);
+  const onPress = () => {
+    var myOptions: MobaiBiometricOptions = { autoCaptureEnabled: true };
+    launch(myOptions);
+  };
 ```

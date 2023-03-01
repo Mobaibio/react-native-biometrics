@@ -1,28 +1,44 @@
 import * as React from 'react';
 
 import { StyleSheet, View, Button, NativeEventEmitter } from 'react-native';
-import { launch, MobaiBiometric } from 'mobai-biometric';
+import {
+  ErrorResult,
+  MBCaptureSessionResult,
+  EVENT_FAILURE,
+  EVENT_SUCCESS,
+  launch,
+  MobaiBiometric,
+  MobaiBiometricOptions,
+} from 'mobai-biometric';
 
 const mobaiBiometricEmmiter = new NativeEventEmitter(MobaiBiometric);
 
 export default function App() {
-  const onCaptureFinished = (event: any) => {
-    console.log('onCaptureFinished:' + event);
+  const onCaptureFinished = (result: MBCaptureSessionResult) => {
+    console.log(EVENT_SUCCESS + 'onCaptureFinished' + result.image.length);
+    if (result.image !== undefined && result.padData !== undefined) {
+      console.log(EVENT_SUCCESS + ' image ' + result.image.length);
+      console.log(EVENT_SUCCESS + ' padData ' + result.padData.length);
+    } else {
+      console.log('Object is not comming');
+    }
   };
 
-  const onFailureWithErrorMessage = (event: any) => {
-    console.log('onFailureWithErrorMessage:' + event);
+  const onFailureWithErrorMessage = (result: ErrorResult) => {
+    if (result.errorDescription !== undefined) {
+      console.log(EVENT_FAILURE + ' error ' + result.errorDescription);
+    } else {
+      console.log('Object is not comming');
+    }
   };
 
-  mobaiBiometricEmmiter.addListener('onCaptureFinished', onCaptureFinished);
+  mobaiBiometricEmmiter.addListener(EVENT_SUCCESS, onCaptureFinished);
 
-  mobaiBiometricEmmiter.addListener(
-    'onFailureWithErrorMessage',
-    onFailureWithErrorMessage
-  );
+  mobaiBiometricEmmiter.addListener(EVENT_FAILURE, onFailureWithErrorMessage);
 
   const onPress = () => {
-    launch();
+    var myOptions: MobaiBiometricOptions = { autoCaptureEnabled: true };
+    launch(myOptions);
   };
 
   return (
@@ -47,5 +63,8 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     marginVertical: 20,
+    backgroundColor: 'blue',
+    position: 'absolute',
+    zIndex: 999,
   },
 });
