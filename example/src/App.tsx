@@ -1,70 +1,138 @@
 import * as React from 'react';
-
-import { StyleSheet, View, Button, NativeEventEmitter } from 'react-native';
+import { useState, useEffect } from 'react';
 import {
-  ErrorResult,
-  MBCaptureSessionResult,
-  EVENT_FAILURE,
-  EVENT_SUCCESS,
-  launch,
-  MobaiBiometric,
-  MobaiBiometricOptions,
-} from 'mobai-biometric';
+  StyleSheet,
+  View,
+  PermissionsAndroid,
+  Platform,
+  Alert,
+} from 'react-native';
+import CaptureScreen from './CaptureScreen';
+import MainScreen from './MainScreen';
+import { ResultScreen } from './ResultScreen';
 
-const mobaiBiometricEmmiter = new NativeEventEmitter(MobaiBiometric);
+export const enum ScreenRoute {
+  MainScreen,
+  CaptureScreen,
+  ResultScreen,
+}
+const PERMISSION_GRANTED = 'granted';
+const PERMISSION_NOT_GRANTED = 'notGranted';
+
+const requestCameraPermission = async (
+  cb: (permissionState: string) => void
+) => {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.CAMERA
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('You can use the camera');
+      cb(PERMISSION_GRANTED);
+    } else {
+      console.log('Camera permission denied');
+      cb(PERMISSION_NOT_GRANTED);
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+};
+
+const rationaleAlert = (okPressed: () => void) => {
+  Alert.alert(
+    'MobaiBiometric camera permission',
+    'MobaiBiometric needs access to your camera for taking a selfie',
+    [
+      {
+        text: 'Cancel',
+        onPress: () => {},
+      },
+      {
+        text: 'Ok',
+        onPress: () => {
+          okPressed();
+        },
+      },
+    ]
+  );
+};
 
 export default function App() {
-  const onCaptureFinished = (result: MBCaptureSessionResult) => {
-    console.log(EVENT_SUCCESS + 'onCaptureFinished' + result.image.length);
-    if (result.image !== undefined && result.padData !== undefined) {
-      console.log(EVENT_SUCCESS + ' image ' + result.image.length);
-      console.log(EVENT_SUCCESS + ' padData ' + result.padData.length);
-    } else {
-      console.log('Object is not comming');
+  const [isPermissionGranted, setIspermissionGranted] = useState('');
+
+  const [screenRoute, setScreenRoute] = useState(ScreenRoute.MainScreen);
+  const setScreenRouteHandler = () => {
+    console.log('Button pressed');
+    setScreenRoute(ScreenRoute.CaptureScreen);
+  };
+
+  const mainScreen = <MainScreen onStartCapture={setScreenRouteHandler} />;
+  const [resultFrames, setResultFrames] = useState(['']);
+
+  const [currentScreen, setCurrentScreen] = useState(mainScreen);
+  useEffect(() => {
+    switch (screenRoute) {
+      case ScreenRoute.MainScreen:
+        setCurrentScreen(mainScreen);
+        break;
+      case ScreenRoute.ResultScreen:
+        setCurrentScreen(<ResultScreen frames={resultFrames} />);
+        break;
+      case ScreenRoute.CaptureScreen:
+        if (Platform.OS === 'android') {
+          requestCameraPermission((permissionState) => {
+            setIspermissionGranted(permissionState);
+          });
+        } else if (Platform.OS === 'ios') {
+          // Request Camera permission for iOS here then
+          // call the function setIspermissionGranted passing a boolean wether permission is granted or not.
+          setCurrentScreen(
+            <CaptureScreen onFaceCaptureSuccess={handlerFaceCaptureSuccess} />
+          );
+        }
+        break;
     }
-  };
+  }, [screenRoute]);
 
-  const onFailureWithErrorMessage = (result: ErrorResult) => {
-    if (result.errorDescription !== undefined) {
-      console.log(EVENT_FAILURE + ' error ' + result.errorDescription);
-    } else {
-      console.log('Object is not comming');
+  useEffect(() => {
+    if (isPermissionGranted === PERMISSION_GRANTED) {
+      setCurrentScreen(
+        <CaptureScreen onFaceCaptureSuccess={handlerFaceCaptureSuccess} />
+      );
+    } else if (isPermissionGranted === PERMISSION_NOT_GRANTED) {
+      rationaleAlert(() => {
+        requestCameraPermission((permissionState) => {
+          setIspermissionGranted(permissionState);
+        });
+      });
     }
+  }, [isPermissionGranted]);
+
+  const handlerFaceCaptureSuccess = (frames: [string]) => {
+    //console.log(frames.length);
+    setResultFrames(frames);
+    setScreenRoute(ScreenRoute.ResultScreen);
   };
 
-  mobaiBiometricEmmiter.addListener(EVENT_SUCCESS, onCaptureFinished);
-
-  mobaiBiometricEmmiter.addListener(EVENT_FAILURE, onFailureWithErrorMessage);
-
-  const onPress = () => {
-    var myOptions: MobaiBiometricOptions = { autoCaptureEnabled: true };
-    launch(myOptions);
-  };
-
-  return (
-    <View style={styles.screenContainer}>
-      <Button title="Click here to start capture session." onPress={onPress} />
-    </View>
-  );
+  return currentScreen;
 }
 
 const styles = StyleSheet.create({
   screenContainer: {
     flex: 1,
     justifyContent: 'center',
-    padding: 16,
-  },
-  container: {
-    flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-    backgroundColor: 'blue',
+  overlay: {
+    width: '100%',
+    height: '100%',
     position: 'absolute',
-    zIndex: 999,
+  },
+  statusText: {
+    color: 'white',
+    fontSize: 25,
+    width: '100%',
+    paddingStart: 20,
+    paddingTop: 10,
   },
 });

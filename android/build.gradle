@@ -67,6 +67,10 @@ android {
 repositories {
   mavenCentral()
   google()
+
+  maven {
+    url "https://gitlab.com/api/v4/projects/36441060/packages/maven"
+  }
 }
 
 def kotlin_version = getExtOrDefault("kotlinVersion")
@@ -80,7 +84,7 @@ dependencies {
   implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
   implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
   implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
-  implementation "bio.mobai:biometric:2.0.0-beta.1"
+  implementation "bio.mobai:biometric:2.0.0-beta.13"
   implementation 'androidx.appcompat:appcompat:1.6.1'
   implementation 'com.google.android.material:material:1.4.0'
 }

@@ -21,11 +21,6 @@ if linkage != nil
   use_frameworks! :linkage => linkage.to_sym
 end
 
-source 'https://cdn.cocoapods.org/'
-source 'https://gitlab.com/mobaibio-public/podspecs.git'
-
-
-
 target 'MobaiBiometricExample' do
   use_frameworks! :linkage => :static
   config = use_native_modules!
@@ -80,6 +75,7 @@ target 'MobaiBiometricExample' do
       if ['MobaiBiometric', 'SwiftProtobuf'].include? target.name
         target.build_configurations.each do |config|
             config.build_settings['BUILD_LIBRARY_FOR_DISTRIBUTION'] = 'YES'
+            config.build_settings['GENERATE_INFOPLIST_FILE'] = 'YES'
         end
       end
     end

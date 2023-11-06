@@ -86,22 +86,21 @@ class MobaiBiometricModule(val reactContext: ReactApplicationContext) :
   fun mapOptions(options: ReadableMap) : MBCaptureSessionOptions {
     val tempOptions = MBCaptureSessionOptions.Builder()
 
-
-
     if (options.hasKey("autoCaptureEnabled")) {
       tempOptions.automaticCapture(options.getBoolean("autoCaptureEnabled"))
-    } else if (options.hasKey("numberOfFramesBeforeCapture")) {
-//      tempOptions = MBCaptureSessionOptions.Builder().numberOfFramesBeforeCapture(options.getInt("numberOfFramesBeforeCapture")).build()
-    } else if (options.hasKey("numberOfFrameToCollect")) {
+    }
+    if (options.hasKey("numberOfFramesBeforeCapture")) {
+      tempOptions.framesBeforeCapture(options.getInt("numberOfFramesBeforeCapture"))
+    }
+    if (options.hasKey("numberOfFrameToCollect")) {
+
       tempOptions.framesToCollect(options.getInt("numberOfFrameToCollect"))
-    } else if (options.hasKey("frameInterval")) {
+    }
+    if (options.hasKey("frameInterval")) {
       tempOptions.frameInterval(options.getInt("frameInterval"))
-    } else if (options.hasKey("faceQualityEnabled")) {
-//      tempOptions = MBCaptureSessionOptions.Builder().faceQualityEnabled(options.getBoolean("faceQualityEnabled")).build()
-    } else if (options.hasKey("timeBeforeAutomaticCapture")) {
-//      tempOptions = MBCaptureSessionOptions.Builder().timeBeforeAutomaticCapture(options.getBoolean("timeBeforeAutomaticCapture")).build()
-    } else if (options.hasKey("isDebugging")) {
-//      tempOptions = MBCaptureSessionOptions.Builder().isDebugging(options.getBoolean("timeBeforeAutomaticCapture")).build()
+    }
+    if (options.hasKey("timeBeforeAutomaticCapture")) {
+      tempOptions.timeBeforeCapture(options.getInt("timeBeforeAutomaticCapture")).build()
     }
 
     return tempOptions.build()

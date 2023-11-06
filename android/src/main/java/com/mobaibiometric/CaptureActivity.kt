@@ -15,13 +15,17 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import bio.mobai.library.biometrics.capturesession.MBCaptureSessionError
+import bio.mobai.library.biometrics.capturesession.MBCaptureSessionFragment
+import bio.mobai.library.biometrics.capturesession.MBCaptureSessionFragmentListener
+import bio.mobai.library.biometrics.capturesession.MBCaptureSessionOptions
 import bio.mobai.library.biometrics.capturesession.MBCaptureSessionResult
 import com.mobaibiometric.MobaiBiometricModule.Companion.BITMAP_IMAGE
 import java.io.ByteArrayOutputStream
 import java.io.File
 import kotlin.reflect.KParameter
 
-class CaptureActivity : AppCompatActivity(), SessionServiceListener {
+class CaptureActivity : AppCompatActivity(), MBCaptureSessionFragmentListener {
   var isPermissionGranted = false
 
   @SuppressLint("UnsafeOptInUsageError")
@@ -29,10 +33,12 @@ class CaptureActivity : AppCompatActivity(), SessionServiceListener {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_capture)
 
-    val captureFragment = CaptureFragment()
-    captureFragment.sessionServiceListener = this
+
+    val options = StorageCaptureOptions.get()
+    val fragment = MBCaptureSessionFragment(options!!, this)
+    verifyCameraPermission()
     supportFragmentManager.beginTransaction()
-      .add(R.id.frame_layout, captureFragment)
+      .add(R.id.frame_layout, fragment)
       .commit()
   }
   /**
@@ -56,7 +62,6 @@ class CaptureActivity : AppCompatActivity(), SessionServiceListener {
 
     if (requestCode == CAMERA_PERMISSION_CODE){
       if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-        Toast.makeText(this, "Permission granted" , Toast.LENGTH_LONG).show()
         isPermissionGranted = true
       }
     }
@@ -66,14 +71,17 @@ class CaptureActivity : AppCompatActivity(), SessionServiceListener {
     private const val CAMERA_PERMISSION_CODE = 1
   }
 
-  @SuppressLint("Recycle")
-  override fun onCaptureFinished(result: MBCaptureSessionResult) {
+  override fun onCaptureFinished(result: MBCaptureSessionResult?) {
     val returnIntent = Intent()
 
-    StorageMBCaptureSessionResult.save(result)
+    StorageMBCaptureSessionResult.save(result!!)
     returnIntent.putExtra(MobaiBiometricModule.FILE_PATHS, RESULT_OK)
     setResult(MobaiBiometricModule.IMAGE_PICKER_REQUEST, returnIntent)
     finish()
+  }
+
+  override fun onFailure(errorEnum: MBCaptureSessionError) {
+    Log.d("MobaiBiometricActivity", "collection failed")
   }
 }
 

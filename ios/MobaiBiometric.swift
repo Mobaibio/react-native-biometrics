@@ -1,14 +1,16 @@
 import Foundation
 import MobaiBiometric
 
-private enum EventName: String, CaseIterable {
+public enum EventName: String, CaseIterable {
     case onCaptureFinished,
          onCaptureStarted,
          onWaitingToCaptureWithFaceStatus,
          onFailureWithErrorMessage,
-         onPresentedDismissTapped
+         onPresentedDismissTapped,
+         onCountDown,
+         onValidation
     
-    var rawValue: String {
+    public var rawValue: String {
         switch self {
         case .onCaptureFinished:
             return "onCaptureFinished"
@@ -20,14 +22,22 @@ private enum EventName: String, CaseIterable {
             return "onFailureWithErrorMessage"
         case .onPresentedDismissTapped:
             return "onPresentedDismissTapped"
+        case .onCountDown:
+            return "onCountDown"
+        case .onValidation:
+            return "onValidation"
         }
     }
 }
 
 @objc (MobaiReactNative)
-class MobaiReactNative: RCTEventEmitter, MBCaptureSessionDelegate {
+class MobaiReactNative: RCTEventEmitter, MBCaptureSessionVCDelegate  {
     
     func onFailure(error: MobaiBiometric.MBCaptureSessionError) {
+        if error == .noFaceDetected {
+            return
+        }
+        
         self.sendEvent(
             withName: EventName.onFailureWithErrorMessage.rawValue,
             body: [
@@ -40,12 +50,28 @@ class MobaiReactNative: RCTEventEmitter, MBCaptureSessionDelegate {
     }
     
     func onValidation(_ status: MobaiBiometric.DetectedFaceStatus) {
+        self.sendEvent(
+            withName: EventName.onValidation.rawValue,
+            body: [
+                "status": status.rawValue
+            ]
+        )
     }
     
     func onCountDown(time: Int) {
+        self.sendEvent(
+            withName: EventName.onCountDown.rawValue,
+            body: [
+                "time": time
+            ]
+        )
     }
     
     func onCapturing() {
+        self.sendEvent(
+            withName: EventName.onCaptureStarted.rawValue,
+            body: ""
+        )
     }
     
     func onSuccess(result: MobaiBiometric.MBCaptureSessionResult) {
@@ -74,6 +100,8 @@ class MobaiReactNative: RCTEventEmitter, MBCaptureSessionDelegate {
         [
             "EVENT_SUCCESS": EventName.onCaptureFinished.rawValue,
             "EVENT_FAILURE": EventName.onFailureWithErrorMessage.rawValue,
+            "EVENT_CAPTURE_FINISHED": EventName.onCaptureFinished.rawValue,
+            "EVENT_CAPTURE_STARTED": EventName.onCaptureStarted.rawValue,
         ]
     }
     
@@ -124,12 +152,11 @@ class MobaiReactNative: RCTEventEmitter, MBCaptureSessionDelegate {
     }
 }
 
-
 @objc
 public class Options: NSObject {
     public var autoCaptureEnabled: Bool = true
     public var numberOfFramesBeforeCapture: Int = 10
-    public var numberOfFrameToCollect: Int = 5
+    public var numberOfFrameToCollect: Int = 3
     public var frameInterval: Int = 10
     public var padCaptureEnabled: Bool = true
     public var faceQualityEnabled: Bool = false
@@ -137,4 +164,5 @@ public class Options: NSObject {
     public var timeBeforeAutomaticCapture: Int = 4
     public var cameraPosition: CameraPostion = .front
     public var presentedDismissButtonEnabled: Bool = false
+    public var cameraPermissionAlert: CameraPermissionAlert = .init()
 }
