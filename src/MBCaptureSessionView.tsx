@@ -51,6 +51,13 @@ export const enum FaceStatus {
   TooManyFaces = 'TooManyFaces',
   ValidFace = 'ValidFace',
 }
+/*
+  Resize the video preview to fill or fit layer
+  */
+export enum PreviewScaleType {
+  fill = 1,
+  fit = 2,
+}
 
 /*
       MobaiBiometricComponentOptions is the base options for the capture session as a component.
@@ -61,6 +68,7 @@ interface MBCaptureSessionOptions {
   frameInterval?: number;
   timeBeforeAutomaticCapture?: number;
   isDebugging?: boolean;
+  previewScaleType?: PreviewScaleType;
 }
 
 /*
@@ -73,6 +81,7 @@ export function setCaptureSessionOptions(options: MBCaptureSessionOptions) {
     frameInterval: options.frameInterval,
     timeBeforeAutomaticCapture: options.timeBeforeAutomaticCapture,
     isDebugging: options.isDebugging,
+    previewScaleType: options.previewScaleType,
   };
 }
 
@@ -83,10 +92,10 @@ const createFragment = (viewId: any) =>
   UIManager.dispatchViewManagerCommand(viewId, '1', [viewId]);
 
 export class MBCaptureSessionView extends React.Component<PropsOutput> {
-  constructor(props) {
+  ref: React.RefObject<MBCaptureSessionView>;
+  constructor(props: any) {
     super(props);
     this._onChange = this._onChange.bind(this);
-    //this._onFaceValidating = this._onFaceValidating.bind(this);
     this.ref = React.createRef();
   }
 
@@ -97,7 +106,7 @@ export class MBCaptureSessionView extends React.Component<PropsOutput> {
     }
   }
 
-  _onChange = (event) => {
+  _onChange = (event: any) => {
     if (event.nativeEvent.messageFaceStatus !== undefined) {
       switch (event.nativeEvent.messageFaceStatus) {
         case 'TOO_FAR_AWAY':

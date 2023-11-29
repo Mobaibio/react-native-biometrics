@@ -8,9 +8,14 @@ const LINKING_ERROR =
 
 const ComponentName = 'RCTMBCaptureSessionView';
 
+interface RCTMobaiCaptureProps {
+  ref: React.RefObject<React.Component>;
+  onChange: (event: any) => void;
+}
+
 export const RCTMobaiCapture =
   UIManager.getViewManagerConfig(ComponentName) != null
-    ? requireNativeComponent(ComponentName)
+    ? requireNativeComponent<RCTMobaiCaptureProps>(ComponentName)
     : () => {
         throw new Error(LINKING_ERROR);
       };

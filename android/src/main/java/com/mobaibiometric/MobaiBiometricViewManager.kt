@@ -10,6 +10,7 @@ import androidx.core.view.marginLeft
 import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentActivity
 import bio.mobai.library.biometrics.capturesession.MBCaptureSessionOptions
+import bio.mobai.library.biometrics.capturesession.MBPreviewScaleType
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableArray
 import com.facebook.react.bridge.ReadableMap
@@ -49,7 +50,7 @@ class MobaiBiometricViewManager(private val callerContext: ReactApplicationConte
     if (index == 1) propHeight = value
   }
   private fun mapOptions(options: ReadableMap): MBCaptureSessionOptions {
-    val tempOptions = MBCaptureSessionOptions.Builder()
+    val tempOptions = MBCaptureSessionOptions.Builder().scaleType(MBPreviewScaleType.FILL_CENTER)
 
     if (options.hasKey("autoCaptureEnabled")) {
       tempOptions.automaticCapture(options.getBoolean("autoCaptureEnabled"))
@@ -65,8 +66,15 @@ class MobaiBiometricViewManager(private val callerContext: ReactApplicationConte
       tempOptions.frameInterval(options.getInt("frameInterval"))
     }
     if (options.hasKey("timeBeforeAutomaticCapture")) {
-      tempOptions.timeBeforeCapture(options.getInt("timeBeforeAutomaticCapture")).build()
+      tempOptions.timeBeforeCapture(options.getInt("timeBeforeAutomaticCapture"))
     }
+    if (options.hasKey("previewScaleType")) {
+      when(options.getInt("previewScaleType")) {
+        1 -> {tempOptions.scaleType(MBPreviewScaleType.FILL_CENTER)}
+        2 -> {tempOptions.scaleType(MBPreviewScaleType.FIT_CENTER)}
+      }
+    }
+
     return tempOptions.build()
   }
 

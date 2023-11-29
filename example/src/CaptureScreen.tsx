@@ -3,6 +3,7 @@ import {
   FaceStatus,
   setCaptureSessionOptions,
   type MBCaptureSessionResult,
+  PreviewScaleType,
 } from 'mobai-biometric';
 import React from 'react';
 import { useState, useEffect } from 'react';
@@ -53,6 +54,7 @@ export default function CaptureScreen(props: any) {
   const options = setCaptureSessionOptions({
     numberOfFrameToCollect: 3,
     timeBeforeAutomaticCapture: 3,
+    previewScaleType: PreviewScaleType.fill
   });
 
   return (
