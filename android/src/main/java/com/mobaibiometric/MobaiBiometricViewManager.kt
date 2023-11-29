@@ -1,13 +1,10 @@
 package com.mobaibiometric
 
 import android.content.res.Resources
-import android.util.Log
 import android.view.Choreographer
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.core.view.marginLeft
-import androidx.core.view.setPadding
 import androidx.fragment.app.FragmentActivity
 import bio.mobai.library.biometrics.capturesession.MBCaptureSessionOptions
 import bio.mobai.library.biometrics.capturesession.MBPreviewScaleType

@@ -1,6 +1,7 @@
 import React from 'react';
 import { UIManager, findNodeHandle, Platform } from 'react-native';
 import { RCTMobaiCapture } from './NativeComponent';
+import type { PreviewScaleType as PreviewScaleType } from './Utils';
 
 /*
     MBCaptureSessionResult is the Biometric Capture module's result model
@@ -50,13 +51,6 @@ export const enum FaceStatus {
   NotFound = 'NotFound',
   TooManyFaces = 'TooManyFaces',
   ValidFace = 'ValidFace',
-}
-/*
-  Resize the video preview to fill or fit layer
-  */
-export enum PreviewScaleType {
-  fill = 1,
-  fit = 2,
 }
 
 /*

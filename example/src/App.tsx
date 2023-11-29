@@ -10,6 +10,7 @@ import {
 import CaptureScreen from './CaptureScreen';
 import MainScreen from './MainScreen';
 import { ResultScreen } from './ResultScreen';
+import { launchNativeModule } from './NativeModule';
 
 export const enum ScreenRoute {
   MainScreen,
@@ -66,7 +67,12 @@ export default function App() {
     setScreenRoute(ScreenRoute.CaptureScreen);
   };
 
-  const mainScreen = <MainScreen onStartCapture={setScreenRouteHandler} />;
+  const mainScreen = (
+    <MainScreen
+      onStartNativeComponent={setScreenRouteHandler}
+      onStartNativeModule={launchNativeModule}
+    />
+  );
   const [resultFrames, setResultFrames] = useState(['']);
 
   const [currentScreen, setCurrentScreen] = useState(mainScreen);

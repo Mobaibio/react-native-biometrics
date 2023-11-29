@@ -1,5 +1,5 @@
 import { MobaiBiometric } from './NativeModule';
-
+import type { PreviewScaleType } from './Utils';
 export const { EVENT_SUCCESS, EVENT_FAILURE } = MobaiBiometric.getConstants();
 
 /*
@@ -15,7 +15,25 @@ export function launch(options: MobaiBiometricOptions): void {
     timeBeforeAutomaticCapture: options.timeBeforeAutomaticCapture,
     isDebugging: options.isDebugging,
     cameraPermissionAlert: options.cameraPermissionAlert,
+    faceStatusTexts: options.faceStatusTexts,
+    previewScaleType: options.previewScaleType,
+    showCountdownLabel: options.showCountdownLabel,
+    showProgressBar: options.showProgressBar,
+    showFaceStatusLabel: options.showFaceStatusLabel,
+    countdownLabelText: options.countdownLabelText,
   });
+}
+
+export interface FaceStatusTexts {
+  faceTooFarAway: string;
+  faceTooFarUp: string;
+  faceTooFarDown: string;
+  faceTooFarLeft: string;
+  faceTooFarRight: string;
+  faceTooClose: string;
+  faceNotFound: string;
+  tooManyFaces: string;
+  validFace: string;
 }
 
 /*
@@ -30,6 +48,12 @@ export interface MobaiBiometricOptions {
   timeBeforeAutomaticCapture?: number;
   isDebugging?: boolean;
   cameraPermissionAlert: CameraPermissionAlert;
+  faceStatusTexts?: FaceStatusTexts;
+  previewScaleType?: PreviewScaleType;
+  showCountdownLabel?: boolean;
+  showProgressBar?: boolean;
+  showFaceStatusLabel?: boolean;
+  countdownLabelText?: string;
 }
 
 /*
@@ -42,8 +66,6 @@ export interface CameraPermissionAlert {
   cancelText: string;
 }
 
-
-interface MBCaptureSessionResult { 
-  image: string; 
-  padData: string;
+export interface ErrorResult {
+  errorDescription: string;
 }

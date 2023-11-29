@@ -2,19 +2,13 @@ React Native version of Mobai Biometric mobile SDK
 
 ## Installation
 
-1. Add the following line to your .npmrc file:
-
-   ```shell
-   @mobaibio-public:registry=https://gitlab.com/api/v4/packages/npm/
-   ```
-
-2. Use the following command to add the dependency to your package.json file:
+1. Use the following command to add the dependency to your package.json file:
 
    ```console
-   npm i @mobaibio-public/mobai-biometric
+   npm i @mobaibio/mobai-biometric
    ```
 
-3. Run the following command to install the dependency
+1. Run the following command to install the dependency
 
    ```console
    yarn
@@ -24,13 +18,6 @@ React Native version of Mobai Biometric mobile SDK
 
 1. The SDK needs to access the camera on the device. A `NSCameraUsageDescription` must be added to the Info.plist for your application.
 2. Some additions must be added to the podfile for the iOS project in order to integrate the SDK correctly.
-
-   - The source to the git repository where the podspec for the `MobaiBiometric` pod is hosted must be added to the podfile. The source to the CocoaPods CDN should also be added to be able to still obtain pods from there:
-
-     ```ruby
-     source 'https://cdn.cocoapods.org/'
-     source 'https://gitlab.com/mobaibio-public/podspecs.git'
-     ```
 
    - If `use_frameworks! :linkage => :static` is used then the following must be added to the podfile to ensure dependency is built as a dynamic framework:
 
@@ -79,7 +66,7 @@ allprojects {
 
 ## Usage
 
-In order to start the screen in React Native first you can call `launch` method that is inside `@mobaibio-public/mobai-biometric`
+In order to start the screen in React Native first you can call `launch` method that can be imported from the `@mobaibio/mobai-biometric` package
 
 ```js
 import {
@@ -95,47 +82,92 @@ import {
 ### Options
 
 Inside the library we have some options for changing behaviour of capturing data:
+| Variable Name | Type | Default Value |
+| --------------------------- | ---------------------| ------------- |
+| numberOfFramesBeforeCapture | number | 10 |
+| numberOfFrameToCollect | number | 3 |
+| frameInterval | number | 10 |
+| timeBeforeAutomaticCapture | number | 4 |
+| isDebugging | boolean | false |
+| cameraPermissionAlert | CameraPermissionAlert| undefined |
+| faceStatusTexts | FaceStatusTexts | undefined |
+| previewScaleType | PreviewScaleType | fill |
+| showCountdownLabel | boolean | false |
+| countdownLabelText | string | 'Hold Still' |
+| showProgressBar | boolean | false |
+| showFaceStatusLabel | boolean | false |
 
-| Variable Name               | Type    | Default Value |
-| --------------------------- | ------- | ------------- |
-| autoCaptureEnabled          | boolean | true          |
-| numberOfFramesBeforeCapture | number  | 10            |
-| numberOfFrameToCollect      | number  | 5             |
-| frameInterval               | number  | 10            |
-| faceQualityEnabled          | boolean | false         |
-| timeBeforeAutomaticCapture  | number  | 4             |
-| isDebugging                 | boolean | false         |
+- `numberOfFramesBeforeCapture`
 
-- autoCaptureEnabled
-  - tells whether the capture is automatic or manual:
-    - Automatic: Take image in automatic way with specific time that you can configure with timeBeforeAutomaticCapture
-    - Manual: Take image in manual way with a help of a button that library shows
-- numberOfFramesBeforeCapture
-  - describes number of frame that library capture before starting the process of capturing
-- numberOfFrameToCollect
+  - describes number of frame that library capture before starting the process of capturing.
+
+- `numberOfFrameToCollect`
+
   - describes the number of frames to collect during the capture session.
-- frameInterval
+
+- `frameInterval`
+
   - after collected the first frame, is the number of frames to skip before collecting a frame.
-- faceQualityEnabled
-  - in order to capture image in higher resolution
-- timeBeforeAutomaticCapture
-  - number of seconds that user needs to wait in automatic capture
-- cameraPermissionAlert - Camera permission object for showing alert when permission is denied from user
-  - title - title of the alert
-  - message - message of the alert
-  - settingText - title for the button to go to setting menu
-  - cancelText - title for cancel
-- isDebugging
-  - it helps to check if constraints are working as expected
-  - for the moment we provide debug text for face
-    - Too Far Away
-    - Too Close
-    - Too Far Up
-    - Too Far Down
-    - Too Far Left
-    - No Face Found
-    - Mouth Not Found
-    - Valid Face
+
+- `timeBeforeAutomaticCapture`
+
+  - number of seconds that user needs to wait in automatic capture.
+
+- `cameraPermissionAler`t - Camera permission object for showing alert when permission is denied from user
+
+  - `title` - title of the alert
+  - `message` - message of the alert
+  - `settingText` - title for the button to go to setting menu
+  - `cancelText` - title for cancel
+
+- `isDebugging`
+
+  - If it is set to false will just display the overlay on the top of the camera.
+  - If it is set to true will display all components available ont the top of the camera(timer text, progress bar and face status text).
+
+- `faceStatusTexts`
+
+  - Is used to customize or localize the text displayed to the user indicating if the face is in correct position or not.
+    if no input is provided to `faceStatusTexts` default values are used.
+
+- `previewScaleType`
+
+  - The mode used to scale the camera preview in the view. It can be set to either `fit` or `fill`. `PreviewScaleType.fill` will ensure the camera preview is taking up the whole view in both width and height. However, this means that some parts of the image will be cropped from the preview. This does not have any impact on the images captured from the camera. `PreviewScaleType.fit` will ensure that exactly what is captured from the camera is shown in the view.
+
+- `showCountdownLabel`
+
+  - Is used to show or hide the label displayed during countdown before capture starts.
+  - The text for the countdownLabel can be set using the `countdownLabelText` option.
+
+- `countdownLabelText`
+
+  - Is used to customize the text shown in the countdown label
+
+- `showProgressBar`
+
+  - Is used to show or hide the progress bar. The progress bar indicates to the user how far in the capture process we are.
+
+- `showFaceStatusLabel`
+
+  - Is used to show or hide the face status label. The face status label is used to indicate to the user if the face is in the correct position or not.
+
+### Props objects
+
+`FaceStatusTexts`
+
+- Object containing the face status strings
+
+| Member          | Type   | Description                                                        |
+| --------------- | ------ | ------------------------------------------------------------------ |
+| faceTooFarAway  | string | Text to display when the face is too far away from the camera      |
+| faceTooFarUp    | string | Text to display when the face i too far up in the camera           |
+| faceTooFarDown  | string | Text to display when the face is too far down in the camera        |
+| faceTooFarLeft  | string | Text to display when the face is too far left in the camera        |
+| faceTooFarRight | string | Text to display when the face is too far right in the camera       |
+| faceTooClose    | string | Text to display when the face is too close to the camera           |
+| faceNotFound    | string | Text to display when no face is found                              |
+| tooManyFaces    | string | Text to display when too many faces are found in the camera        |
+| validFace       | string | Text to display when the face is in a valid position in the camera |
 
 ### Event Emitters
 
@@ -537,13 +569,13 @@ Capture session options.
 - `timeBeforeAutomaticCapture` Is the set time in seconds the capture should wait to start collecting frames.
 - `previewScaleType` The mode used to scale the camera preview in the view. It can be set to either fit or fill. PreviewScaleType.fill will ensure the camera preview is taking up the whole view in both width and height. However, this means that some parts of the image will be cropped from the preview. This does not have any impact on the images captured from the camera. PreviewScaleType.fit will ensure that exactly what is captured from the camera is shown in the view.
 
-| Variable Name               | Type    | Default Value |
-| --------------------------- | ------- | ------------- |
-| numberOfFramesBeforeCapture | number  | 10            |
-| numberOfFrameToCollect      | number  | 3             |
-| frameInterval               | number  | 10            |
-| timeBeforeAutomaticCapture  | number  | 4             |
-| isDebugging                 | boolean | false         |
+| Variable Name               | Type    | Default Value         |
+| --------------------------- | ------- | --------------------- |
+| numberOfFramesBeforeCapture | number  | 10                    |
+| numberOfFrameToCollect      | number  | 3                     |
+| frameInterval               | number  | 10                    |
+| timeBeforeAutomaticCapture  | number  | 4                     |
+| isDebugging                 | boolean | false                 |
 | previewScaleType            | enum    | PreviewScaleType.fill |
 
 Options implementation example:
@@ -556,7 +588,7 @@ const options = setCaptureSessionOptions(
     numberOfFramesBeforeCapture: 5,
     frameInterval: 5,
     timeBeforeAutomaticCapture: 5,
-    previewScaleType: PreviewScaleType.fill,  
+    previewScaleType: PreviewScaleType.fill,
   }
   )
 
